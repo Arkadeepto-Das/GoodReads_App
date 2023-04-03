@@ -81,13 +81,14 @@
       $result = $conn->query($data);
       if($result) {
         if(mysqli_num_rows($result) > 0) {
+          $conn->close();
           return $result;
         }
         else {
+          $conn->close();
           return NULL;
         }
       }
-      $conn->close();
     }
 
     /**
@@ -103,8 +104,44 @@
       $conn = self::connect();
       $data = "SELECT Firstname, Lastname FROM Users WHERE Username = '$userName'";
       $result = $conn->query($data);
-      return $result;
       $conn->close();
+      return $result;
+    }
+
+    /**
+     * Select the reader details.
+     * 
+     * @param string $userName
+     * Store the username.
+     * 
+     * @return mysqli object
+     * Return the query result.
+     */
+    public function readerDetails(string $userName) {
+      $conn = self::connect();
+      $data = "SELECT Bucket_list, Wish_list, Reading
+      FROM Reader_details
+      WHERE Username = '$userName'";
+      $result = $conn->query($data);
+      $conn->close();
+      return $result;
+    }
+
+    /**
+     * Select the book names.
+     * 
+     * @return mysqli object
+     * Return the query result.
+     */
+    public function bookList(int $start, int $end) {
+      $conn = self::connect();
+      $data = "SELECT Book_name, Author
+      FROM Books
+      ORDER BY Book_name
+      LIMIT '$start', '$end'";
+      $result = $conn->query($data);
+      $conn->close();
+      return $result;
     }
   }
 ?>
